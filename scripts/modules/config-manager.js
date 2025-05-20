@@ -367,6 +367,22 @@ function getOllamaBaseUrl(explicitRoot = null) {
 }
 
 /**
+ * Gets the base URL for the Anthropic API from configuration or environment.
+ * @param {string|null} explicitRoot - Optional explicit path to the project root.
+ * @returns {string|null} The Anthropic base URL or null if not configured.
+ */
+function getAnthropicBaseUrl(explicitRoot = null) {
+	// 先检查配置文件中是否有设置
+	const configValue = getGlobalConfig(explicitRoot).anthropicBaseUrl;
+	// 如果配置文件中有非null值，使用配置文件中的值
+	if (configValue !== null && configValue !== undefined) {
+		return configValue;
+	}
+	// 否则尝试从环境变量获取
+	return resolveEnvVariable('ANTHROPIC_BASE_URL', null, explicitRoot);
+}
+
+/**
  * Gets model parameters (maxTokens, temperature) for a specific role,
  * considering model-specific overrides from supported-models.json.
  * @param {string} role - The role ('main', 'research', 'fallback').
@@ -749,6 +765,7 @@ export {
 	getDefaultPriority,
 	getProjectName,
 	getOllamaBaseUrl,
+	getAnthropicBaseUrl,
 	getParametersForRole,
 	getUserId,
 	// API Key Checkers (still relevant)

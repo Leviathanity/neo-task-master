@@ -7,6 +7,7 @@
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { generateText, streamText, generateObject } from 'ai';
 import { log } from '../../scripts/modules/utils.js'; // Assuming utils is accessible
+import { getAnthropicBaseUrl } from '../../scripts/modules/config-manager.js';
 
 // TODO: Implement standardized functions for generateText, streamText, generateObject
 
@@ -24,13 +25,14 @@ function getClient(apiKey, baseUrl) {
 		// Keep the error check for the passed key
 		throw new Error('Anthropic API key is required.');
 	}
-	// Remove the check for anthropicClient
-	// if (!anthropicClient) {
-	// TODO: Explore passing options like default headers if needed
+	
+	// 如果没有提供baseUrl参数，尝试从配置中获取
+	const effectiveBaseUrl = baseUrl || getAnthropicBaseUrl();
+	
 	// Create and return a new instance directly with standard version header
 	return createAnthropic({
 		apiKey: apiKey,
-		...(baseUrl && { baseURL: baseUrl }),
+		...(effectiveBaseUrl && { baseURL: effectiveBaseUrl }),
 		// Use standard version header instead of beta
 		headers: {
 			'anthropic-beta': 'output-128k-2025-02-19'
@@ -63,6 +65,7 @@ export async function generateAnthropicText({
 }) {
 	log('debug', `Generating Anthropic text with model: ${modelId}`);
 	try {
+		// 获取客户端，优先使用传入的baseUrl，如果没有则从配置中获取
 		const client = getClient(apiKey, baseUrl);
 		const result = await generateText({
 			model: client(modelId),
@@ -114,6 +117,7 @@ export async function streamAnthropicText({
 }) {
 	log('debug', `Streaming Anthropic text with model: ${modelId}`);
 	try {
+		// 获取客户端，优先使用传入的baseUrl，如果没有则从配置中获取
 		const client = getClient(apiKey, baseUrl);
 
 		log(
@@ -182,6 +186,7 @@ export async function generateAnthropicObject({
 		`Generating Anthropic object ('${objectName}') with model: ${modelId}`
 	);
 	try {
+		// 获取客户端，优先使用传入的baseUrl，如果没有则从配置中获取
 		const client = getClient(apiKey, baseUrl);
 		log(
 			'debug',

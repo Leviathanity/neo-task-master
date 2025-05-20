@@ -26,6 +26,27 @@ At least one (1) of the following is required:
 
 Using the research model is optional but highly recommended. You will need at least ONE API key. Adding all API keys enables you to seamlessly switch between model providers at will.
 
+### Custom Claude Server Support
+
+本版本支持使用自定义的Claude API服务器。您可以通过以下方式配置：
+
+1. 在`.env`文件中设置`ANTHROPIC_BASE_URL`变量：
+   ```
+   ANTHROPIC_BASE_URL=https://your-custom-claude-server.com/v1
+   ```
+
+2. 在MCP配置中添加`ANTHROPIC_BASE_URL`环境变量（如上所示）
+
+3. 在`.taskmasterconfig`文件中，在`global`部分添加：
+   ```json
+   "anthropicBaseUrl": "https://your-custom-claude-server.com/v1"
+   ```
+
+优先级顺序：
+1. 直接API调用中的baseUrl参数（如果有）
+2. `.taskmasterconfig`中的`anthropicBaseUrl`设置
+3. 环境变量`ANTHROPIC_BASE_URL`
+
 ## Quick Start
 
 ### Option 1 | MCP (Recommended):
@@ -42,6 +63,7 @@ MCP (Model Control Protocol) provides the easiest way to get started with Task M
 			"args": ["-y", "--package=task-master-ai", "task-master-ai"],
 			"env": {
 				"ANTHROPIC_API_KEY": "YOUR_ANTHROPIC_API_KEY_HERE",
+				"ANTHROPIC_BASE_URL": "YOUR_CUSTOM_CLAUDE_SERVER_URL_HERE",
 				"PERPLEXITY_API_KEY": "YOUR_PERPLEXITY_API_KEY_HERE",
 				"OPENAI_API_KEY": "YOUR_OPENAI_KEY_HERE",
 				"GOOGLE_API_KEY": "YOUR_GOOGLE_KEY_HERE",
